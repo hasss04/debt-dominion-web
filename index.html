@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/png" href="/logo.png" />
+  <link rel="apple-touch-icon" href="/logo.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Debt & Dominion</title>
+
+  <meta name="theme-color" content="#0f172a" />
+  <meta name="description" content="Debt & Dominion — Insights into finance, power, and geopolitics." />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              primary: '#F97316',
+              secondary: '#0F172A',
+              light: '#F1F5F9',
+              medium: '#64748B',
+            },
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            serif: ['Inter', 'serif'],
+          },
+          animation: {
+            'fade-in': 'fadeIn 0.3s ease-out forwards',
+          },
+          keyframes: {
+            fadeIn: {
+              '0%': { opacity: 0, transform: 'scale(0.95)' },
+              '100%': { opacity: 1, transform: 'scale(1)' },
+            },
+          },
+        },
+      },
+    };
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,700;0,900;1,400;1,700&display=swap"
+    rel="stylesheet"
+  />
+
+  <script type="importmap">
+    {
+      "imports": {
+        "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+        "react/": "https://aistudiocdn.com/react@^19.2.0/",
+        "react": "https://aistudiocdn.com/react@^19.2.0",
+        "@google/genai": "https://aistudiocdn.com/@google/genai@^1.22.0",
+        "react-router-dom": "https://aistudiocdn.com/react-router-dom@^7.9.3"
+      }
+    }
+  </script>
+
+  <link rel="stylesheet" href="/index.css" />
+</head>
+<body class="bg-brand-light dark:bg-brand-secondary">
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+</body>
+</html>
