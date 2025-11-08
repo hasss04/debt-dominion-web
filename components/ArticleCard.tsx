@@ -17,7 +17,6 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
     article.imageUrl ||
     `https://picsum.photos/800/600?random=${Math.floor(Math.random() * 1000)}`;
 
-  // Safely normalize author info
   const authorName =
     typeof article.author === 'string'
       ? article.author
@@ -34,23 +33,27 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
       : article.metaDescription || 'Read the full story below.';
 
   return (
-    <div className="relative bg-white dark:bg-slate-800 rounded-lg overflow-hidden shadow-lg flex flex-col group transition-transform duration-300 hover:-translate-y-1">
+    <article className="relative bg-white dark:bg-slate-800 rounded-xl overflow-hidden shadow-lg flex flex-col group transition-transform duration-300 hover:-translate-y-0.5">
       <Link to={`/article/${article.slug}`} className="block">
-        <img
-          src={imageUrl}
-          alt={article.title || 'Article image'}
-          className="w-full h-48 object-cover"
-        />
+        {/* Responsive media area with fixed aspect ratio */}
+        <div className="w-full aspect-[16/9] bg-slate-200 dark:bg-slate-700">
+          <img
+            src={imageUrl}
+            alt={article.title || 'Article image'}
+            className="w-full h-full object-cover"
+            loading="lazy"
+          />
+        </div>
       </Link>
 
-      <div className="p-6 flex flex-col flex-grow">
+      <div className="p-5 sm:p-6 flex flex-col flex-1">
         <div className="mb-2">
-          <span className="text-xs font-bold uppercase tracking-wider text-brand-primary">
+          <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-brand-primary">
             {article.category || 'World'}
           </span>
         </div>
 
-        <h3 className="text-xl font-bold font-serif mb-2 text-slate-900 dark:text-brand-light flex-grow">
+        <h3 className="text-lg sm:text-xl lg:text-2xl font-bold font-serif mb-2 text-slate-900 dark:text-brand-light">
           <Link
             to={`/article/${article.slug}`}
             className="hover:text-brand-primary transition-colors"
@@ -59,25 +62,26 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
           </Link>
         </h3>
 
-        <p className="text-slate-600 dark:text-brand-medium text-sm mb-4">
+        <p className="text-slate-600 dark:text-brand-medium text-sm sm:text-[15px] leading-relaxed mb-4 line-clamp-3">
           {excerpt}
         </p>
 
-        <div className="flex items-center text-slate-500 dark:text-brand-medium text-xs mt-auto pt-4 border-t border-slate-200 dark:border-slate-700">
+        <div className="mt-auto pt-4 border-t border-slate-200 dark:border-slate-700 flex items-center gap-3 text-slate-500 dark:text-brand-medium text-xs">
           <img
             src={authorAvatar}
             alt={typeof authorName === 'string' ? authorName : 'Author'}
-            className="w-8 h-8 rounded-full mr-3"
+            className="w-8 h-8 rounded-full object-cover"
+            loading="lazy"
           />
-          <div>
-            <span className="font-semibold text-slate-700 dark:text-slate-300">
+          <div className="min-w-0">
+            <span className="block truncate font-semibold text-slate-700 dark:text-slate-300">
               {typeof authorName === 'string' ? authorName : 'Author'}
             </span>
             <span className="block">{formattedDate}</span>
           </div>
         </div>
       </div>
-    </div>
+    </article>
   );
 };
 
