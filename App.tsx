@@ -18,6 +18,9 @@ import ContactPage from "./components/ContactPage";
 import SearchPage from "./components/SearchPage";
 import DashboardPage from "./components/DashboardPage";
 
+// 👇 Add this import for your chatbot
+import ChatbotUI from "./components/Chatbot";
+
 const App: React.FC = () => (
   <AuthProvider>
     <MainApp />
@@ -178,6 +181,7 @@ const MainApp: React.FC = () => {
         </main>
 
         <Footer />
+        <ChatbotUI />
       </div>
     </HashRouter>
   );
