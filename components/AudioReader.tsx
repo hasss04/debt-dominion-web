@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Play, Pause, RotateCcw, RotateCw, Volume2, VolumeX } from "lucide-react";
 
-/* ---------------- INLINE AUDIO READER WITH CONSISTENT HIGHLIGHTING ---------------- */
+/* ---------------- INLINE AUDIO READER WITH WORKING VOLUME ---------------- */
 const AudioReader: React.FC = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
@@ -25,13 +25,13 @@ const AudioReader: React.FC = () => {
   const prepareArticleForHighlighting = () => {
     const el = document.getElementById("article-content");
     if (!el) {
-      console.log("Article content element not found");
+      console.log("❌ Article content element not found");
       return { text: "", words: [] };
     }
 
     // Check if already prepared
     if (el.querySelector('.tts-word')) {
-      console.log("Article already prepared");
+      console.log("✅ Article already prepared");
       return extractPreparedText();
     }
 
@@ -96,7 +96,7 @@ const AudioReader: React.FC = () => {
     wordsRef.current = words;
     articleTextRef.current = fullText.trim();
 
-    console.log(`Prepared ${words.length} words for highlighting`);
+    console.log(`✅ Prepared ${words.length} words for highlighting`);
 
     return { text: fullText.trim(), words };
   };
@@ -200,7 +200,7 @@ const AudioReader: React.FC = () => {
       
       const utterance = new SpeechSynthesisUtterance(textToSpeak);
       utterance.rate = speed;
-      utterance.volume = isMuted ? 0 : volume;
+      utterance.volume = isMuted ? 0 : volume; // ✅ Apply current volume
       utterance.pitch = 1;
       utterance.lang = 'en-US';
 
@@ -396,15 +396,49 @@ const AudioReader: React.FC = () => {
     }
   };
 
-  // Update volume
+  // FIXED: Update volume with restart if playing
   const updateVolume = (newVolume: number) => {
+    const oldVolume = volume;
     setVolume(newVolume);
     setIsMuted(newVolume === 0);
+
+    // If currently playing, restart with new volume
+    if (isPlaying && !isPaused) {
+      const currentWord = currentWordIndexRef.current;
+      
+      // Only restart if volume changed significantly (avoid too many restarts during drag)
+      if (Math.abs(newVolume - oldVolume) >= 0.1) {
+        stopReading();
+        setTimeout(() => {
+          startReadingFrom(currentWord);
+        }, 200);
+      }
+    }
   };
 
-  // Toggle mute
   const toggleMute = () => {
-    setIsMuted(!isMuted);
+    const newMutedState = !isMuted;
+    setIsMuted(newMutedState);
+
+    // If currently playing, restart with new mute state
+    if (isPlaying && !isPaused) {
+      const currentWord = currentWordIndexRef.current;
+      stopReading();
+      setTimeout(() => {
+        startReadingFrom(currentWord);
+      }, 200);
+    }
+  };
+
+  // ✅ NEW: Handle volume slider mouse up (apply final volume)
+  const handleVolumeMouseUp = () => {
+    if (isPlaying && !isPaused) {
+      const currentWord = currentWordIndexRef.current;
+      stopReading();
+      setTimeout(() => {
+        startReadingFrom(currentWord);
+      }, 200);
+    }
   };
 
   // Prepare article on mount
@@ -546,10 +580,9 @@ const AudioReader: React.FC = () => {
           </div>
         </div>
 
-        {/* Volume */}
         <div>
           <div className="flex justify-between text-xs text-slate-700 dark:text-slate-300 mb-2">
-            <span className="font-medium">Volume</span>
+            <span className="font-medium">Volume {Math.round(volume * 100)}%</span>
             <button onClick={toggleMute} className="hover:text-orange-600 dark:hover:text-orange-400 transition-colors">
               {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
             </button>
@@ -558,16 +591,18 @@ const AudioReader: React.FC = () => {
             type="range"
             min="0"
             max="1"
-            step="0.1"
+            step="0.05"
             value={isMuted ? 0 : volume}
             onChange={(e) => updateVolume(parseFloat(e.target.value))}
+            onMouseUp={handleVolumeMouseUp}
+            onTouchEnd={handleVolumeMouseUp}
             className="w-full h-1.5 accent-orange-500 cursor-pointer"
           />
         </div>
       </div>
 
       <p className="text-xs text-center text-slate-500 dark:text-slate-400 mt-3">
-         Drag the progress bar to skip • Scroll freely while listening
+        Drag the progress bar to skip • Scroll freely while listening
       </p>
     </div>
   );
