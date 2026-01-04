@@ -25,13 +25,13 @@ const AudioReader: React.FC = () => {
   const prepareArticleForHighlighting = () => {
     const el = document.getElementById("article-content");
     if (!el) {
-      console.log("❌ Article content element not found");
+      console.log("Article content element not found");
       return { text: "", words: [] };
     }
 
     // Check if already prepared
     if (el.querySelector('.tts-word')) {
-      console.log("✅ Article already prepared");
+      console.log("Article already prepared");
       return extractPreparedText();
     }
 
@@ -96,7 +96,7 @@ const AudioReader: React.FC = () => {
     wordsRef.current = words;
     articleTextRef.current = fullText.trim();
 
-    console.log(`✅ Prepared ${words.length} words for highlighting`);
+    console.log(`Prepared ${words.length} words for highlighting`);
 
     return { text: fullText.trim(), words };
   };
@@ -200,7 +200,7 @@ const AudioReader: React.FC = () => {
       
       const utterance = new SpeechSynthesisUtterance(textToSpeak);
       utterance.rate = speed;
-      utterance.volume = isMuted ? 0 : volume; // ✅ Apply current volume
+      utterance.volume = isMuted ? 0 : volume;
       utterance.pitch = 1;
       utterance.lang = 'en-US';
 
@@ -430,7 +430,7 @@ const AudioReader: React.FC = () => {
     }
   };
 
-  // ✅ NEW: Handle volume slider mouse up (apply final volume)
+  // NEW: Handle volume slider mouse up (apply final volume)
   const handleVolumeMouseUp = () => {
     if (isPlaying && !isPaused) {
       const currentWord = currentWordIndexRef.current;
