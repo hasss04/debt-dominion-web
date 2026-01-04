@@ -1,29 +1,16 @@
-export type Category = 'Politics' | 'Finance' | 'Geopolitics' | 'Technology' | 'World';
+export interface Author {
+  name: string;
+  avatarUrl: string;
+}
 
 export interface Article {
+  id: string;
   slug: string;
   title: string;
   excerpt: string;
+  body: string;
+  category: string;
   imageUrl: string;
-  category: Category;
-  author: {
-    name: string;
-    avatarUrl: string;
-  };
-  publishedDate: string; // ISO string format
-  body: string; // HTML content
-  focusKeyPhrase?: string;
-  metaDescription?: string;
-}
-
-export type Theme = 'light' | 'dark';
-
-export type Role = 'admin' | 'member' | 'subscriber';
-
-export interface User {
-  uid: string;
-  email: string | null;
-  displayName: string | null;
-  photoURL: string | null;
-  role: Role;
+  publishedDate: string;
+  author: Author;
 }

@@ -1,24 +1,19 @@
-import { initializeApp, getApps, getApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
-import { getStorage } from 'firebase/storage';
-import { getDatabase } from 'firebase/database';
-import { getFirestore } from 'firebase/firestore';
+import { initializeApp, getApps, getApp } from "firebase/app";
+import { getDatabase } from "firebase/database";
+import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCxH8yp7vBAKRcHR6deq0pF5m4o0uQdlxI",
-  authDomain: "studio-5927375734-5754c.firebaseapp.com",
+  authDomain: "studio-592737534-5754c.firebaseapp.com",
   databaseURL: "https://studio-5927375734-5754c-default-rtdb.firebaseio.com",
-  projectId: "studio-5927375734-5754c",
-  storageBucket: "studio-5927375734-5754c.appspot.com",
+  projectId: "studio-592737534-5754c",
+  storageBucket: "studio-592737534-5754c.appspot.com",
   messagingSenderId: "228039712999",
-  appId: "1:228039712999:web:b2138907583c7f7c78c242"
+  appId: "1:228039712999:web:0e9ac687dd8bd77c78c242",
 };
 
+// Initialize Firebase only if no apps exist
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 
-export const auth = getAuth(app);
-export const storage = getStorage(app);
-export const db = getFirestore(app);
 export const rtdb = getDatabase(app);
-
-export default app;
+export const auth = getAuth(app);

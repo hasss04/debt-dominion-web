@@ -1,87 +1,72 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import type { Article } from '../services/types';
+import React from "react";
+import { Link } from "react-router-dom";
+import { Sparkles } from "lucide-react";
+import type { Article } from "../services/types";
 
-interface ArticleCardProps {
+interface Props {
   article: Article;
 }
 
-const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
-  const formattedDate = new Date(article.publishedDate).toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  });
-
-  const imageUrl =
-    article.imageUrl ||
-    `https://picsum.photos/800/600?random=${Math.floor(Math.random() * 1000)}`;
-
-  const authorName =
-    typeof article.author === 'string'
-      ? article.author
-      : article.author?.name || 'Unknown Author';
-
-  const authorAvatar =
-    typeof article.author === 'object' && article.author?.avatarUrl
-      ? article.author.avatarUrl
-      : 'https://picsum.photos/seed/default/100/100';
-
-  const excerpt =
-    article.excerpt && article.excerpt.trim().length > 0
-      ? article.excerpt
-      : article.metaDescription || 'Read the full story below.';
+const ArticleCard: React.FC<Props> = ({ article }) => {
+  const formattedDate = new Date(article.publishedDate).toLocaleDateString(
+    "en-US",
+    { month: "short", day: "numeric", year: "numeric" }
+  );
 
   return (
-    <article className="relative bg-white dark:bg-slate-800 rounded-xl overflow-hidden shadow-lg flex flex-col group transition-transform duration-300 hover:-translate-y-0.5">
-      <Link to={`/article/${article.slug}`} className="block">
-        {/* Responsive media area with fixed aspect ratio */}
-        <div className="w-full aspect-[16/9] bg-slate-200 dark:bg-slate-700">
-          <img
-            src={imageUrl}
-            alt={article.title || 'Article image'}
-            className="w-full h-full object-cover"
-            loading="lazy"
-          />
-        </div>
+    <div className="bg-white dark:bg-slate-800 rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 flex flex-col">
+      {/* Image */}
+      <Link to={`/article/${article.slug}`}>
+        <img
+          src={article.imageUrl}
+          alt={article.title}
+          className="w-full h-48 object-cover hover:scale-105 transition-transform duration-300"
+        />
       </Link>
 
-      <div className="p-5 sm:p-6 flex flex-col flex-1">
-        <div className="mb-2">
-          <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-brand-primary">
-            {article.category || 'World'}
-          </span>
-        </div>
+      {/* Content */}
+      <div className="p-6 flex-1 flex flex-col">
+        {/* Category */}
+        <span className="inline-block px-3 py-1 bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 rounded-full text-xs font-semibold mb-3 w-fit">
+          {article.category}
+        </span>
 
-        <h3 className="text-lg sm:text-xl lg:text-2xl font-bold font-serif mb-2 text-slate-900 dark:text-brand-light">
-          <Link
-            to={`/article/${article.slug}`}
-            className="hover:text-brand-primary transition-colors"
-          >
-            {article.title || 'Untitled Article'}
-          </Link>
-        </h3>
+        {/* Title */}
+        <Link to={`/article/${article.slug}`}>
+          <h3 className="text-xl font-bold mb-2 text-slate-900 dark:text-white hover:text-orange-600 dark:hover:text-orange-400 transition-colors line-clamp-2">
+            {article.title}
+          </h3>
+        </Link>
 
-        <p className="text-slate-600 dark:text-brand-medium text-sm sm:text-[15px] leading-relaxed mb-4 line-clamp-3">
-          {excerpt}
+        {/* Excerpt */}
+        <p className="text-slate-600 dark:text-slate-400 text-sm mb-4 flex-1 line-clamp-3">
+          {article.excerpt}
         </p>
 
-        <div className="mt-auto pt-4 border-t border-slate-200 dark:border-slate-700 flex items-center gap-3 text-slate-500 dark:text-brand-medium text-xs">
-          <img
-            src={authorAvatar}
-            alt={typeof authorName === 'string' ? authorName : 'Author'}
-            className="w-8 h-8 rounded-full object-cover"
-            loading="lazy"
-          />
-          <div className="min-w-0">
-            <span className="block truncate font-semibold text-slate-700 dark:text-slate-300">
-              {typeof authorName === 'string' ? authorName : 'Author'}
-            </span>
-            <span className="block">{formattedDate}</span>
+        {/* Author & Date */}
+        <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 border-t dark:border-slate-700 pt-4">
+          <div className="flex items-center gap-2">
+            <img
+              src={article.author.avatarUrl}
+              alt={article.author.name}
+              className="w-6 h-6 rounded-full"
+            />
+            <span className="font-medium">{article.author.name}</span>
           </div>
+          <span>{formattedDate}</span>
+        </div>
+
+        {/* Read More + AI Button */}
+        <div className="flex gap-2 mt-4">
+          <Link
+            to={`/article/${article.slug}`}
+            className="flex-1 px-4 py-2 bg-orange-500 text-white text-center rounded-lg hover:bg-orange-600 transition-colors text-sm font-semibold"
+          >
+            Read More →
+          </Link>
         </div>
       </div>
-    </article>
+    </div>
   );
 };
 

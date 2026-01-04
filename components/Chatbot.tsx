@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MessageCircle, X, Send } from "lucide-react";
@@ -63,17 +65,48 @@ const ChatbotUI: React.FC = () => {
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
 
+  /* 🔑 KEYBOARD OFFSET (FIX) */
+  const [keyboardOffset, setKeyboardOffset] = useState(0);
+
   const chatEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  /* ---------------- MOBILE KEYBOARD FIX ---------------- */
+  useEffect(() => {
+    if (!window.visualViewport) return;
+
+    const handleViewportChange = () => {
+      const viewport = window.visualViewport!;
+      const offset =
+        window.innerHeight - viewport.height - viewport.offsetTop;
+
+      setKeyboardOffset(offset > 0 ? offset : 0);
+    };
+
+    window.visualViewport.addEventListener("resize", handleViewportChange);
+    window.visualViewport.addEventListener("scroll", handleViewportChange);
+
+    return () => {
+      window.visualViewport.removeEventListener(
+        "resize",
+        handleViewportChange
+      );
+      window.visualViewport.removeEventListener(
+        "scroll",
+        handleViewportChange
+      );
+    };
+  }, []);
 
   /* Capture article text once chat opens */
   useEffect(() => {
     if (isOpen) {
       setArticleText(getArticleText());
-      inputRef.current?.focus();
+      setTimeout(() => inputRef.current?.focus(), 150);
     }
   }, [isOpen]);
 
+  /* Auto scroll */
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isTyping]);
@@ -93,13 +126,9 @@ const ChatbotUI: React.FC = () => {
 
     setTimeout(() => {
       let reply = "";
-
       const lower = userMessage.text.toLowerCase();
 
-      if (
-        lower.includes("summar") ||
-        lower.includes("what is this article about")
-      ) {
+      if (lower.includes("summar") || lower.includes("what is this")) {
         reply = summarizeArticle(articleText);
       } else if (
         lower.includes("further") ||
@@ -145,8 +174,11 @@ const ChatbotUI: React.FC = () => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 60, scale: 0.95 }}
             transition={{ duration: 0.35 }}
-            className="fixed bottom-24 right-4 sm:right-6 w-[90vw] sm:w-[22rem] md:w-[26rem] bg-white rounded-3xl shadow-2xl flex flex-col overflow-hidden z-50 border border-orange-100"
-            style={{ height: "min(80vh, 600px)" }}
+            className="fixed right-4 sm:right-6 w-[90vw] sm:w-[22rem] md:w-[26rem] bg-white rounded-3xl shadow-2xl flex flex-col overflow-hidden z-50 border border-orange-100"
+            style={{
+              height: "min(80vh, 600px)",
+              bottom: `calc(6rem + ${keyboardOffset}px)`,
+            }}
           >
             {/* Header */}
             <div className="bg-gradient-to-r from-orange-500 via-orange-600 to-orange-500 text-white px-4 py-3 flex justify-between items-center">
